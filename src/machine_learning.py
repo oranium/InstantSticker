@@ -125,7 +125,7 @@ FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
 model_dir = tempfile.mkdtemp()
 tf.gfile.MakeDirs(model_dir)
 
-download_path = os.path.join("./", "tarmodel.gz")
+download_path = os.path.join("../", "tarmodel.gz")
 MODEL = DeepLabModel(download_path)
 
 def run_visualization(name):

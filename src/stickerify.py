@@ -1,11 +1,11 @@
-import numpy
 from PIL import Image
 import requests
 import machine_learning
 
+
 def sticker_from_rectangle(coordinates, url):
     # max size for stickers
-    max_size = (512,512)
+    max_size = (512, 512)
     try:
         # url for picture on telegram server
         img = Image.open(requests.get(url, stream=True).raw)

@@ -3,4 +3,4 @@ Pipfile.lock
 __pycache__/
 **.png
 **.pyc
-
+.idea/

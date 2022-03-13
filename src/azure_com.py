@@ -1,7 +1,6 @@
 import requests
 import stickerify
 from credentials import CREDENTIALS
-from errors import NoFace
 
 AZURE_LINK = CREDENTIALS["AZURE_LINK"]
 

@@ -11,7 +11,6 @@ from db import log_sticker_into_database
 
 from get_stats import get_stats
 
-
 # Enable logging
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -26,6 +25,7 @@ KEYBOARD_COMMANDS = {
     "KEEP": "Keep it!",
     "DEL": "Delete it!"
 }
+
 
 ############################Keyboard#######################################
 
@@ -46,6 +46,7 @@ def send_keyboard(update):
 def remove_keyboard(msg, update):
     update.message.reply_text(msg,
                               reply_markup=ReplyKeyboardRemove())
+
 
 ###########################################################################
 
@@ -75,11 +76,13 @@ def delete_sticker(bot, sticker_id):
             logger.error(err)
             return False
 
+
 def get_sticker_set_title(first_name):
     if (first_name[-1] == 's') or (first_name[-1] == 'z'):
         return "{}' sticker pack".format(first_name)
     else:
         return "{}'s sticker pack".format(first_name)
+
 
 def add_new_sticker(bot, update, sticker_data):
     user = update.message.from_user
@@ -136,6 +139,7 @@ def send_error(bot, update, err):
     bot.send_message(
         chat_id=chat_id, text="I\'m sry {}! {}".format(user_name, str(err)))
 
+
 #####################################################################################
 
 
@@ -154,7 +158,8 @@ def start(bot, update):
     username = user.first_name
     logger.info("User {} started the bot.".format(user.first_name))
     update.message.reply_text(
-        "Welcome {}\nJust send me your latest selfie as a photo and I will turn it into a fancy sticker!".format(username))
+        "Welcome {}\nJust send me your latest selfie as a photo and I will turn it into a fancy sticker!".format(
+            username))
 
 
 def helper(bot, update):
@@ -165,7 +170,8 @@ def helper(bot, update):
     user = update.message.from_user
     logger.info("User {} asked for help.".format(user.first_name))
     update.message.reply_text(
-        "Just send me your latest selfie as a photo and I will turn it into a fancy sticker!\n<a href=\"https://www.youtube.com/watch?v=yz5Jaj9_Sog\">How to use FaceToSticker.</a>", parse_mode="HTML")
+        "Just send me your latest selfie as a photo and I will turn it into a fancy sticker!\n<a href=\"https://www.youtube.com/watch?v=yz5Jaj9_Sog\">How to use FaceToSticker.</a>",
+        parse_mode="HTML")
 
 
 def user_info(bot, update):
@@ -178,7 +184,8 @@ def user_info(bot, update):
 def delete_info(bot, update):
     first_name = update.message.from_user.first_name
     update.message.reply_text(
-        'Ok just send me a sticker from your pack "{}" I created and I will remove it.'.format(get_sticker_set_title(first_name)))
+        'Ok just send me a sticker from your pack "{}" I created and I will remove it.'.format(
+            get_sticker_set_title(first_name)))
     return DELETE
 
 
@@ -195,19 +202,22 @@ def del_sticker_from_set(bot, update):
     user_id = update.message.from_user.id
     if sticker_id:
         try:
-            if(sticker.set_name is not DEFAULT_STICKERSET_NAME.format(user_id)):
+            if (sticker.set_name is not DEFAULT_STICKERSET_NAME.format(user_id)):
                 logger.info(sticker.set_name)
                 logger.info(get_sticker_set_title(update.message.from_user.first_name))
                 raise Exception("Stickerset_not_owned")
-            #bot.delete_sticker_from_set(sticker_id)
+            # bot.delete_sticker_from_set(sticker_id)
             bot.send_message(
-                chat_id=chat_id, text='Sticker has been deleted!\nPlease send me another sticker to delete or exit with \exit')
+                chat_id=chat_id,
+                text='Sticker has been deleted!\nPlease send me another sticker to delete or exit with \exit')
         except Exception as err:
             error_str = str(err)
             if error_str is "Stickerset_not_modified":
-                bot.send_message(chat_id=chat_id, text="You already deleted this sticker.\nPlease note that it takes some time for Telegram to delete the sticker.\nOften restarting the app helps.")
+                bot.send_message(chat_id=chat_id,
+                                 text="You already deleted this sticker.\nPlease note that it takes some time for Telegram to delete the sticker.\nOften restarting the app helps.")
             elif error_str is "Stickerset_invalid":
-                bot.send_message(chat_id=chat_id, text="I'm only able to delete stickers from sets you created with my help!")
+                bot.send_message(chat_id=chat_id,
+                                 text="I'm only able to delete stickers from sets you created with my help!")
             elif error_str is "Stickerset_not_owned":
                 bot.send_message(chat_id=chat_id, text="You are not allowed to delete stickers that you didn't create!")
             else:
@@ -217,13 +227,15 @@ def del_sticker_from_set(bot, update):
 
     return DELETE
 
-def send_stats(bot, update): 
+
+def send_stats(bot, update):
     if (update.message.chat.id in ADMINS):
         stats = get_stats()
         msg = 'INSTANT STICKER STATS {}\n'.format(u'\U0001f4ca')
         for s in stats:
-            msg += '{}: {}\n'.format(s[0],s[1])
+            msg += '{}: {}\n'.format(s[0], s[1])
         update.message.reply_text(msg)
+
 
 def get_user_info(bot, update):
     if (update.message.chat.id in ADMINS):
@@ -233,6 +245,7 @@ def get_user_info(bot, update):
         user_id = user.id
         user_info = "Name: {}\nUserid: {}\nChatid: {}".format(first_name, user_id, chat_id)
         update.message.reply_text(user_info)
+
 
 #####################################################################################
 
@@ -282,7 +295,7 @@ def sticker_decision(bot, update):
     if keep:
         msg = "Great! Have fun with your new Sticker." + u'\u2665\ufe0f'
     else:
-        if(delete_sticker(bot, sticker_id)):
+        if (delete_sticker(bot, sticker_id)):
             logger.info(
                 "{} successfully deleted a sticker.".format(user.first_name))
             msg = "Ok I removed the sticker {} \nHopefully it's getting better next time!".format(
