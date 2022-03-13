@@ -4,11 +4,11 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, RegexHandler
 from telegram.ext.filters import Filters
 from db.db import log_chat_into_database
 from credentials import CREDENTIALS
-from functions import KEYBOARD_COMMANDS, DECISION, DELETE, start, error, process_image, helper, sticker_decision, user_info, del_sticker_from_set, exit_conversation, delete_info, get_user_info, send_stats
+from functions import KEYBOARD_COMMANDS, DECISION, DELETE, start, error, process_image, helper, sticker_decision, \
+    user_info, del_sticker_from_set, exit_conversation, delete_info, get_user_info, send_stats
 
 
 def initialize_bot():
-
     # Create the EventHandler and pass it your bot's token.
     updater = Updater(CREDENTIALS["TOKEN"])
 
@@ -33,7 +33,7 @@ def initialize_bot():
         fallbacks=[CommandHandler("exit", exit_conversation)]
     )
 
-    dp.add_handler(handler = MessageHandler(Filters.all, log_chat_into_database), group=1)
+    dp.add_handler(handler=MessageHandler(Filters.all, log_chat_into_database), group=1)
     dp.add_handler(CommandHandler('start', start))
     dp.add_handler(CommandHandler('help', helper))
     dp.add_handler(CommandHandler('userinfo', get_user_info))

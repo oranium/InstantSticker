@@ -5,13 +5,13 @@ from const import DEFAULT_STICKERSET_NAME, EMOTIONS, ADMINS
 
 from telegram.error import TelegramError
 
-from azure_com import get_sticker_from_photo
-
 from db.db import log_sticker_into_database
 
 from db.get_stats import get_stats
 
 # Enable logging
+from image_manipulation import stickerify
+
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO)
@@ -84,15 +84,15 @@ def get_sticker_set_title(first_name):
         return "{}'s sticker pack".format(first_name)
 
 
-def add_new_sticker(bot, update, sticker_data):
+def add_new_sticker(bot, update, image_path):
     user = update.message.from_user
     user_id = user.id
     first_name = user.first_name
     # file_id = update.message.photo[-1].file_id
-    png_sticker = open(sticker_data['path'], 'rb')
+    png_sticker = open(image_path, 'rb')
     sticker_set_name = get_default_sticker_set_name(user_id, bot.username)
 
-    emojis = EMOTIONS[sticker_data["emotion"]]
+    emojis = EMOTIONS["not_detected"]
 
     # first try to create a new sticker pack with default name
     try:
@@ -104,14 +104,14 @@ def add_new_sticker(bot, update, sticker_data):
     except TelegramError as err:
         # if sticker set does not exist create one
         logger.error(err)
-        png_sticker = open(sticker_data['path'], 'rb')
-        if (str(err) == "Stickerset_invalid"):
+        png_sticker = open(image_path, 'rb')
+        if str(err) == "Sticker set_invalid":
             try:
                 title = get_sticker_set_title(first_name)
                 bot.create_new_sticker_set(
                     user_id=user_id, name=sticker_set_name, title=title, png_sticker=png_sticker, emojis=emojis)
                 logger.info(
-                    'Sucessfully created sticker set {}'.format(sticker_set_name))
+                    'Successfully created sticker set {}'.format(sticker_set_name))
             except TelegramError as err:
                 logger.error(err)
 
@@ -262,7 +262,8 @@ def process_image(bot, update):
 
     # prozess photo via azure and tensorflow
     try:
-        sticker_data = get_sticker_from_photo(image_url)
+        image_path = stickerify.sticker_from_rectangle(image_url)
+        sticker_data = None
     except Exception as err:
         send_error(bot, update, err)
         return ConversationHandler.END
@@ -275,7 +276,7 @@ def process_image(bot, update):
 
     # send a preview for new sticker to user
     send_new_sticker(bot, update)
-    send_emotion(bot, update, EMOTIONS[sticker_data["emotion"]])
+    send_emotion(bot, update, EMOTIONS["not_detected"])
 
     # ask for desicion to keep or delete the sticker
     send_keyboard(update)
