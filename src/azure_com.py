@@ -1,5 +1,5 @@
 import requests
-import stickerify
+from image_manipulation import stickerify
 from credentials import CREDENTIALS
 
 AZURE_LINK = CREDENTIALS["AZURE_LINK"]

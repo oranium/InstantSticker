@@ -1,21 +1,13 @@
 #!/usr/bin/python3
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ConversationHandler, CallbackQueryHandler, Filters
+from telegram.ext import ConversationHandler
 from telegram.ext import Updater, CommandHandler, MessageHandler, RegexHandler
 from telegram.ext.filters import Filters
-from db import log_chat_into_database
+from db.db import log_chat_into_database
 from credentials import CREDENTIALS
 from functions import KEYBOARD_COMMANDS, DECISION, DELETE, start, error, process_image, helper, sticker_decision, user_info, del_sticker_from_set, exit_conversation, delete_info, get_user_info, send_stats
 
 
-def main():
-    """
-    Main function.
-    This function handles the conversation flow by setting
-    states on each step of the flow. Each state has its own
-    handler for the interaction with the user.
-    """
+def initialize_bot():
 
     # Create the EventHandler and pass it your bot's token.
     updater = Updater(CREDENTIALS["TOKEN"])
@@ -59,7 +51,3 @@ def main():
     # Run the bot until the user presses Ctrl-C or the process
     # receives SIGINT, SIGTERM or SIGABRT:
     updater.idle()
-
-
-if __name__ == '__main__':
-    main()

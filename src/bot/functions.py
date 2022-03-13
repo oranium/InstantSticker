@@ -1,15 +1,15 @@
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
 import logging
-from const import DEFAULT_PACKAGE_TITLE, DEFAULT_STICKERSET_NAME, EMOTIONS, ADMINS
+from const import DEFAULT_STICKERSET_NAME, EMOTIONS, ADMINS
 
-from telegram.error import TelegramError, BadRequest
+from telegram.error import TelegramError
 
 from azure_com import get_sticker_from_photo
 
-from db import log_sticker_into_database
+from db.db import log_sticker_into_database
 
-from get_stats import get_stats
+from db.get_stats import get_stats
 
 # Enable logging
 logging.basicConfig(
